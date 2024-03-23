@@ -1,0 +1,76 @@
+{% load custom_filters %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+      <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+      <link rel="stylesheet" href="/static/css/style.css">
+
+    </head>
+    <body>
+
+    <header class="text-center p-3 bg-dark text-white d-flex justify-content-between align-items-center">
+  <h1>List of All Matches</h1>
+        {% if user.staff_status %}
+        <a href="/create" class="btn btn-success">Create Match</a>
+        {% endif %}
+</header> <br>
+
+<main class="container d-flex flex-column mb-5">
+
+  <ul class="list-group mb-3">
+      {%if match_list%}
+        <h1>List of Natches</h1>
+      {%else%}
+        <h1>NO Match Found</h1>
+      {%endif%}
+    {% for match in match_list %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="match-info">
+          <span class="fw-bold">{{ match.team1 }} vs {{ match.team2 }}</span> <br>
+          {% if match.match_winner %}
+            <span class="text-muted">Winner: {{ match.match_winner }}</span> <br>
+
+
+                {% if match.team1_score == match.team2_score %}
+                    <span class="text-muted">{{match.match_winner}} {{match.winnner}}
+                {%else %}
+            <span class="text-muted">{{match.match_winner}} won by
+                    {% if match.toss_winner == match.match_winner %}
+                        {% if match.toss_choice == "bat" %}
+                            {{match.team2_score | subtract:match.team1_score}} runs
+                        {% else %}
+                            {% if match.match_winner == match.team1 %}
+                                {{match.team1_wicket | subtract:10}} wickets
+                            {% else %}
+                                {{match.team2_wicket | subtract:10}} wickets
+                            {% endif %}
+                        {% endif %}
+                  {% else %}
+                        {% if match.toss_choice == "bat" %}
+                            {% if match.match_winner == match.team1 %}
+                                {{match.team1_wicket | subtract:10}} wickets
+                            {% else %}
+                                {{match.team2_wicket | subtract:10}} wickets
+                            {% endif %}
+                       {% else %}
+                            {{match.team2_score | subtract:match.team1_score}} runs
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+            </span>
+
+          {% endif %}
+        </div>
+        <a href="/match/{{ match.id }}" class="btn btn-primary">View Details</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  </main>
+    </body>
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    </html>
